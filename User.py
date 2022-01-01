@@ -17,5 +17,5 @@ class User:
             for game in parsed_dict["gamesList"]["games"]["game"]:
                 game_name = game["name"]
                 self.games_dict.add(game_name)
-        except TypeError:
+        except KeyError:
             print(f"ERROR: The user {self.username} seems to have their profile set to private")
