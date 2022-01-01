@@ -12,6 +12,15 @@ def create_user_objects():
             profile_url = line_list[1].strip()
             friend = User(username=username, url=profile_url)
             friends.append(friend)
+
+    num_friends = len(friends)
+    if num_friends == 1: # 1 is a special case because we change the plurality (are -> is, users -> user)
+        print(f"ERROR: Two or more users are required to compare games. There is currently {num_friends} user in 'friends_list.txt'.")
+        sys.exit(1)
+    elif num_friends < 2:
+        print(f"ERROR: Two or more users are required to compare games. There are currently {num_friends} users in 'friends_list.txt'.")
+        sys.exit(1)
+
     return friends
 
 def main():
