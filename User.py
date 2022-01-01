@@ -1,6 +1,12 @@
 import requests
 import xmltodict
 
+class PrivateProfileException(Exception):
+    pass
+
+class PrivateGameListException(Exception):
+    pass
+
 class User:
     def __init__(self, username, url):
         self.username = username
@@ -18,4 +24,8 @@ class User:
                 game_name = game["name"]
                 self.games_dict.add(game_name)
         except KeyError:
-            print(f"ERROR: The user {self.username} seems to have their profile set to private")
+            error_message = f"ERROR: The user {self.username} seems to have their profile set to private!"
+            raise PrivateProfileException(error_message)
+        except TypeError:
+            error_message = f"ERROR: The user {self.username} seems to have the games list on their profile set to private!"
+            raise PrivateGameListException(error_message)
