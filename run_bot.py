@@ -42,14 +42,25 @@ async def add_user(ctx, player_name, steam_url):
 async def get_users(ctx):
 	"""
 	Returns a list of all users currently in the database
+
+	Example:
+	!get_users
 	"""
 	server_response = steam_with_friends_bot.get_all_users()
-	await ctx.send(server_response)
+	users_string = ""
+	for user in server_response:
+		steam_player_id = user[0]
+		player_name = user[1]
+		users_string += f"{player_name} - `{steam_player_id}`\n"
+	await ctx.send(users_string)
 
 @bot.command()
 async def update_games(ctx, player_name):
 	"""
 	Adds the list of games for the specified user
+
+	Example:
+	!update_games Josh
 	"""
 	player_name_lowercase = player_name.lower() # always force the player_name to be lowercase so the user can use any variation of capitalization
 	try:
