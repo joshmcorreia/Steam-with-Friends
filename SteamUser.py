@@ -23,7 +23,7 @@ class SteamUser:
 		"""
 		Validates the Steam URL to see if it matches a basic regex
 		"""
-		match = re.search("^https:\/\/steamcommunity.com\/id\/", self.steam_url)
+		match = re.search("^https:\/\/steamcommunity.com\/", self.steam_url)
 		if match is None:
 			raise InvalidSteamURLException(f"Invalid SteamURL `{self.steam_url}`")
 

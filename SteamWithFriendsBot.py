@@ -43,9 +43,8 @@ class SteamWithFriendsBot:
 		return database_response[0][0] # [0] for the first row, and [0] to get the SteamPlayerID from the list
 
 	def add_game_to_database(self, game_name, player_name):
-		steam_player_id = self.convert_player_name_to_steam_id(player_name=player_name)
-		insert_sql_statement = "INSERT IGNORE INTO `Games` (`GameName`, `SteamPlayerID`) VALUES (%s, %s)"
-		sql_arguments = (game_name, steam_player_id,) # a tuple is expected so we need the trailing comma
+		insert_sql_statement = "INSERT IGNORE INTO `Games` (`GameName`, `PlayerName`) VALUES (%s, %s)"
+		sql_arguments = (game_name, player_name,) # a tuple is expected so we need the trailing comma
 		self.database_cursor.execute(insert_sql_statement, sql_arguments)
 		self.database_connection.commit()
 
@@ -60,3 +59,16 @@ class SteamWithFriendsBot:
 		steam_user = SteamUser(steam_url=steam_player_id)
 		for game in steam_user.games_set:
 			self.add_game_to_database(game_name=game, player_name=player_name)
+
+	def get_games_in_common(self, users: tuple):
+		select_sql_statement = "select GameName from Games WHERE "
+		for user in users:
+			select_sql_statement += "PlayerName=%s OR "
+		select_sql_statement = select_sql_statement[:-3] # remove the last "OR "
+		select_sql_statement += f"GROUP BY GameName HAVING COUNT(*) = {len(users)};"
+		sql_arguments = users # a tuple is expected so we need the trailing comma
+		print(select_sql_statement)
+		print(sql_arguments)
+		self.database_cursor.execute(select_sql_statement, sql_arguments)
+		database_response = self.database_cursor.fetchall()
+		return database_response

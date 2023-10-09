@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Users (
 
 CREATE TABLE IF NOT EXISTS Games (
 	GameName VARCHAR(255) NOT NULL,
-	SteamPlayerID VARCHAR(64) NOT NULL,
-	PRIMARY KEY(GameName, SteamPlayerID)
+	PlayerName VARCHAR(64) NOT NULL,
+	PRIMARY KEY(GameName, PlayerName)
 );
 ```

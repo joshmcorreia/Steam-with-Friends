@@ -77,4 +77,26 @@ async def update_games(ctx, player_name):
 		logger.exception(err)
 		await ctx.send(error_message)
 
+@bot.command()
+async def play(ctx, *users):
+	"""
+	Returns a list of games that all players own
+
+	Example:
+	!play Josh Stell Colin
+	"""
+	if len(users) < 2:
+		error_message = "The !play command requires two or more players."
+		logger.error(error_message)
+		await ctx.send(error_message)
+
+	games_in_common = steam_with_friends_bot.get_games_in_common(users=users)
+	games_in_common_as_string = ""
+	for game in games_in_common:
+		games_in_common_as_string += f"{game[0]}\n"
+	print(games_in_common)
+	await ctx.send(games_in_common_as_string[:1999])
+	# TODO: deal with sending messages >2000 characters
+	# TODO: add option for users to randomly get a game from the list
+
 bot.run(TOKEN)
