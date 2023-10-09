@@ -17,25 +17,26 @@ async def on_ready():
 	await channel.send("SteamWithFriendsBot is ready!")
 
 @bot.command()
-async def add_user(ctx, name, steam_url):
+async def add_user(ctx, player_name, steam_url):
 	"""
 	Adds the specified user to the database of users
 
 	Example:
 	!add_user Josh https://steamcommunity.com/id/Winning117/
 	"""
+	player_name = player_name.lower() # always force the player_name to be lowercase so the user can use any variation of capitalization
 	try:
-		steam_with_friends_bot.add_user(steam_url=steam_url, name=name)
-		await ctx.send(f"Added user `{name}` with steam_url `{steam_url}`")
+		steam_with_friends_bot.add_user(steam_url=steam_url, player_name=player_name)
+		await ctx.send(f"Added user `{player_name}` with steam_url `{steam_url}`")
 	except PrivateProfileException:
-		await ctx.send(f"Failed to add user `{name}` because their Steam profile is set to private.")
+		await ctx.send(f"Failed to add user `{player_name}` because their Steam profile is set to private.")
 	except PrivateGameListException:
-		await ctx.send(f"Failed to add user `{name}` because their games list is set to private.")
+		await ctx.send(f"Failed to add user `{player_name}` because their games list is set to private.")
 	except InvalidSteamURLException:
-		await ctx.send(f"Failed to add user `{name}` because the URL `{steam_url}` is invalid. The URL should match the form `https://steamcommunity.com/id/STEAM_ID`.")
+		await ctx.send(f"Failed to add user `{player_name}` because the URL `{steam_url}` is invalid. The URL should match the form `https://steamcommunity.com/id/STEAM_ID`.")
 	except Exception as err:
 		logger.exception(err)
-		await ctx.send(f"Failed to add user `{name}` due to an unexpected exception.")
+		await ctx.send(f"Failed to add user `{player_name}` due to an unexpected exception.")
 
 	# TODO: Make sure the user doesn't already exist in the database
 	# TODO: Make sure the steam URL is valid
@@ -53,6 +54,7 @@ async def update_games(ctx, player_name):
 	"""
 	Adds the list of games for the specified user
 	"""
+	player_name = player_name.lower() # always force the player_name to be lowercase so the user can use any variation of capitalization
 	try:
 		steam_with_friends_bot.update_user_games(player_name=player_name)
 		await ctx.send(f"Successfully updated games for {player_name}")
