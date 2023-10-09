@@ -1,6 +1,10 @@
+import re
 import requests
 import xmltodict
 from BetterLogger import logger
+
+class InvalidSteamURLException(Exception):
+	pass
 
 class PrivateProfileException(Exception):
 	pass
@@ -12,7 +16,16 @@ class SteamUser:
 	def __init__(self, steam_url: str):
 		self.steam_url = steam_url
 		self.games_set = set()
+		self.validate_steam_url()
 		self.get_game_list()
+
+	def validate_steam_url(self):
+		"""
+		Validates the Steam URL to see if it matches a basic regex
+		"""
+		match = re.search("^https:\/\/steamcommunity.com\/id\/", self.steam_url)
+		if match is None:
+			raise InvalidSteamURLException(f"Invalid SteamURL `{self.steam_url}`")
 
 	def get_game_list(self):
 		try:

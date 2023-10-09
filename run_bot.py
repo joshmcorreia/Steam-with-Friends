@@ -2,7 +2,8 @@ import os
 import discord
 from discord.ext import commands
 from SteamWithFriendsBot import SteamWithFriendsBot
-from SteamUser import PrivateProfileException, PrivateGameListException
+from SteamUser import InvalidSteamURLException, PrivateProfileException, PrivateGameListException
+from BetterLogger import logger
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
@@ -30,7 +31,10 @@ async def add_user(ctx, name, steam_url):
 		await ctx.send(f"Failed to add user `{name}` because their Steam profile is set to private.")
 	except PrivateGameListException:
 		await ctx.send(f"Failed to add user `{name}` because their games list is set to private.")
+	except InvalidSteamURLException:
+		await ctx.send(f"Failed to add user `{name}` because the URL `{steam_url}` is invalid. The URL should match the form `https://steamcommunity.com/id/STEAM_ID`.")
 	except Exception as err:
+		logger.exception(err)
 		await ctx.send(f"Failed to add user `{name}` due to an unexpected exception.")
 
 	# TODO: Make sure the user doesn't already exist in the database
